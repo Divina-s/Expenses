@@ -90,9 +90,9 @@ class registerView(View):
               user.set_password(password)
               user.save()
               messages.success(request,'Account Successfully created')
-              return render(request,'register.html',{} )
+              return render(request,'home.html',{} )
        
-        return render(request,'register.html',{})  
+        return render(request,'home.html',{})  
 def landingView(request, *args, **kwargs):
     return render(request, 'landing.html', {})
 def logoutView(request):

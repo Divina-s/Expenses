@@ -15,7 +15,7 @@ class UserPreference(models.Model):
         return str(user)+'s'+'preferences'
 class UserProfile(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE, null=True)  
-    bio=models.TextField()
+    bio=models.TextField(null=True)
     profile_pic=models.ImageField(null=True, blank="True", upload_to='images/profile')
     
     def __str__(self):
