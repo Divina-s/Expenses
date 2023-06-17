@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+  <div class="container mt-4">
+     <div class="row mt-3">
+   
+        <div class="col-md-10">
+         <nav aria-label="breadcrumb ">
+           <ol class="breadcrumb" >
+            <li class="breadcrumb-item"><a href="#">Expenses</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Expenses</li>
+           </ol>
+         </nav> 
+        </div>
+        <div class="col-md-2">
+         <a href="{% url 'add-expense' %}" class="btn btn-primary">Add Expense</a>
+        </div>
+    </div>
+  </div>
+
+  <div class="container mt-3">
+    {% include 'partials/messages.html' %}
+    {% if expenses.count %}
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input type="text" class="form-control"placeholder="Search" id="searchField">
+        </div>
+      </div>
+    
+    
+    </div>
+    <div class="app-table">
+      <table class="table table-stripped table-hover">
+        <th>
+          <tr>
+            <th>Amount({{currency}})</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </th>
+        <tbody>
+          {% for expense in page_obj %}
+          <tr>
+            <td>{{expense.amount}}</td>
+            <td>{{expense.category}}</td>
+            <td>{{expense.description}}</td>
+            <td>{{expense.date}}</td>
+            <td><a href="{% url 'edit-expense' expense.id %}"class="btn btn-dark btn-sm">Edit</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-output">
+      <table class="table table-stripped table-hover">
+        <th>
+          <tr>
+            <th>Amount({{currency}})</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </th>
+        <tbody class="table-body"></tbody>
+      </table>
+
+
+
+    </div>
+    <div class="pagination-container">
+    <div class="row">
+      <div class="col-md-9">
+      Showing page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+    </div>
+    <div class="col-md-3">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+          <a href="?page=1">first</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="page-link">previous</a>
+      {% endif %}
+
+      
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">last </a>
+      {% endif %}
+  </span>
+ </div>
+    </div> 
+   </div>
+    {% endif %}
+<script src="{% static 'js/searchExpenses.js' %}">
+
+</script>
+
+{% endblock %}

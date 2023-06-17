@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-11">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item "><a href="{% url 'home' %}">Expenses</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                </ol>
+              </nav>
+        </div>
+       
+    </div>
+    </div>
+    <div class="row mt-5">
+        <h5>Profile </h5>
+        </div>
+     <hr/>
+    
+
+
+<div class="card mt-5">
+    <form action="" method="Post">
+        {% include 'partials/messages.html' %}
+   {% csrf_token %}
+    <div class="card-body mt-5">
+        <div class="form-group">
+           
+           {{request.user.Profile.bio}}
+            <br>
+        <div class="form-group">
+            
+        </div><br>
+        <div class="form-group">
+           
+        </div><br>
+        <div class="form-group">
+            
+        </div>
+        </div>  
+        <a href=""class="btn btn-dark btn-sm">Edit</a>
+    </form>
+    </div>
+
+
+</div>
+
+{% endblock %}

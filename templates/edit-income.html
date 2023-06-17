@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+ 
+
+<div class="container mt-4">
+<div class="row">
+    <div class="col-md-11">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item "><a href="{% url 'income-index' %}">Income</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Edit Income</li>
+            </ol>
+          </nav>
+    </div>
+    <div class="col-md-1">
+          <a href="{% url 'delete-income' income.id %}" class="btn btn-dark btn-sm">Delete</a>
+    </div>
+</div>
+</div>
+
+    <div class="card">
+        <form action="{% url 'edit-income' income.id %}" method="Post">
+            {% include 'partials/messages.html' %}
+       {% csrf_token %}
+        <div class="card-body">
+            <div class="form-group">
+                <label for="">Amount</label>
+                <input type="number" name="amount"class="form-control form-control-sm" value="{{values.amount}}">
+            </div><br>
+            <div class="form-group">
+                <label for="">Description</label>
+                <input type="text" name="description"class="form-control form-control-sm" value="{{values.description}}">
+            </div><br>
+            <div class="form-group">
+                <label for="">source</label>
+               <select class="form-control form-control-sm" name="source">
+                <option selected name="source">{{values.source}}</option>
+               {% for Source in sources %}
+                <option name="category">{{Source.name}}</option>
+               {% endfor %}
+                </select>
+            </div><br>
+            <div class="form-group">
+                <label for="">Date of Income</label>
+                <input type="date" name="date_income"class="form-control form-control-sm" value="{{values.date |date:'Y-m-d'}}">
+            </div>
+            </div>  
+            <div class="form-group py-3 ">
+                <input type="submit" value="Save"  class="  btn btn-primary   btn btn-primary submit-btn">
+        </div>
+        </form>
+        </div>
+
+   
+    </div>
+
+{% endblock %}

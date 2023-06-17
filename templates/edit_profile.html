@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-11">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item "><a href="{% url 'home' %}">Expenses</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Account Settings</li>
+                    </ol>
+                  </nav>
+            </div>
+           
+        </div>
+        </div>
+        <div class="row mt-3">
+            <h5>Account Settings</h5>
+            </div>
+         <hr/>
+        
+            <div class="card">
+                <form action="" method="Post">
+                    {% include 'partials/messages.html' %}
+               {% csrf_token %}
+                <div class="card-body">
+                    <div class="form-group">
+                        <form action="" method="post">
+                      {% csrf_token %}
+                      {{form.as_p}}
+
+                        </form>
+                    </div>
+                    <div class="form-group py-3 ">
+                        <input type="submit" value="Save"  class="  btn btn-primary   btn btn-primary submit-btn">
+                </div>
+                </form>
+                </div>
+        
+           
+            </div>
+{% endblock %}
