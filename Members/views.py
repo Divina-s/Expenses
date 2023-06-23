@@ -33,8 +33,9 @@ class loginView(View):
          if user:
             if user.is_active:
                auth.login(request,user)
-               messages.success(request,'Welcome, '+user.username+'')
-               return redirect('home')
+               messages.success(request,'Welcome back, '+user.username+'')
+              
+               return redirect('dashboard')
             else:
                messages.error(request, 'You were unable to log in')
                return render(request,'login.html', {})
@@ -90,9 +91,10 @@ class registerView(View):
               user.set_password(password)
               user.save()
               messages.success(request,'Account Successfully created')
-              return render(request,'home.html',{} )
+              messages.info(request, 'Make sure to select your Preferred Currency!!' )
+              return render(request,'dashboard.html',{} )
        
-        return render(request,'home.html',{})  
+        return render(request,'dashboard.html',{})  
 def landingView(request, *args, **kwargs):
     return render(request, 'landing.html', {})
 def logoutView(request):
@@ -140,7 +142,7 @@ class UserChangeView(generic.UpdateView):
    form_class=EditProfileForm
    template_name='edit_profile.html'
   
-   success_url=reverse_lazy('home')
+   success_url=reverse_lazy('dashboard')
 
 
    def get_object(self):

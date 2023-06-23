@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+ 
+
+<div class="container mt-4">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item "><a href="{% url 'budget-index' %}">Budget</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Add Budget</li>
+    </ol>
+  </nav>
+</div>
+
+    <div class="card">
+        <form action="{% url 'add-budget' %}" method="Post">
+            {% include 'partials/messages.html' %}
+       {% csrf_token %}
+        <div class="card-body">
+            <div class="form-group">
+                <label for="">Amount</label>
+                <input type="number" name="amount"class="form-control form-control-sm" value="{{values.amount}}">
+            </div><br>
+            <div class="form-group">
+                <label for="">Name</label>
+                <input type="text" name="name"class="form-control form-control-sm" value="{{values.description}}">
+            </div><br>
+            <div class="form-group">
+                <label for="">Category</label>
+               <select class="form-control form-control-sm" name="category">
+               {% for Category in categories %}
+                <option name="category">{{Category.name}}</option>
+               {% endfor %}
+                </select>
+            </div><br>
+            <div class="form-group">
+                <label for="">from_date</label>
+                <input type="date" name="from_date"class="form-control form-control-sm" value="{{values.date}}">
+            </div><br>
+            <div class="form-group">
+                <label for="">to_date</label>
+                <input type="date" name="to_date"class="form-control form-control-sm" value="{{values.date}}">
+            </div>
+            </div>  
+            <div class="form-group py-3 ">
+                <input type="submit" value="submit"  class="  btn btn-primary   btn btn-primary submit-btn">
+        </div>
+        </form>
+        </div>
+
+   
+    </div>
+
+{% endblock %}

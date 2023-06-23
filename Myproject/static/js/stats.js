@@ -6,7 +6,7 @@ const renderChart=(data, labels) =>{
       data: {
         labels: labels,
         datasets: [{
-          label: 'Last six months Expenses',
+          label: 'Last months Expenses',
           data: data,
           borderWidth: 1
         }]

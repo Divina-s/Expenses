@@ -6,7 +6,7 @@ const renderChartIncome=(data, labels) =>{
       data: {
         labels: labels,
         datasets: [{
-          label: 'Last six months Income',
+          label: 'Last months Income',
           data: data,
           borderWidth: 1
         }]

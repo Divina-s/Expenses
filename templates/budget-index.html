@@ -8,25 +8,25 @@
         <div class="col-md-10">
          <nav aria-label="breadcrumb ">
            <ol class="breadcrumb" >
-            <li class="breadcrumb-item"><a href="#">Expenses</a></li>
-            <li class="breadcrumb-item active" aria-current="page">My Expenses</li>
+            <li class="breadcrumb-item"><a href="#">Budget</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Budget</li>
            </ol>
          </nav> 
         </div>
         <div class="col-md-2">
-         <a href="{% url 'add-expense' %}" class="btn btn-primary">Add Expense</a>
+         <a href="{% url 'add-budget' %}" class="btn btn-primary">Add Budget</a>
         </div>
     </div>
   </div>
 
-  <div class="container mt-3">
+ <div class="container mt-3">
     {% include 'partials/messages.html' %}
-    {% if expenses.count %}
+    {% if budget.count %}
     <div class="row">
       <div class="col-md-8"></div>
       <div class="col-md-4">
         <div class="form-group">
-          <input type="text" class="form-control"placeholder="Search" id="searchfield">
+          <input type="text" class="form-control"placeholder="Search" id="searchField">
         </div>
       </div>
     
@@ -37,20 +37,23 @@
         <th>
           <tr>
             <th>Amount({{currency}})</th>
+            <th>from_date</th>
+            <th>to_date</th>
             <th>Category</th>
-            <th>Description</th>
-            <th>Date</th>
+            <th>Name</th>
             <th></th>
           </tr>
         </th>
         <tbody>
-          {% for expense in page_obj %}
+          {% for budget in page_obj %}
           <tr>
-            <td>{{expense.amount}}</td>
-            <td>{{expense.category}}</td>
-            <td>{{expense.description}}</td>
-            <td>{{expense.date}}</td>
-            <td><a href="{% url 'edit-expense' expense.id %}"class="btn btn-dark btn-sm">Edit</a></td>
+            <td>{{budget.amount}}</td>
+            <td>{{budget.from_date}}</td>
+            <td>{{budget.to_date}}</td>
+            <td>{{budget.category}}</td>
+            <td>{{budget.Name}}</td>
+
+            <td><a href="{% url 'edit-budget' budget.id %}"class="btn btn-dark btn-sm">Edit</a></td>
           </tr>
           {% endfor %}
         </tbody>
@@ -62,9 +65,10 @@
         <th>
           <tr>
             <th>Amount({{currency}})</th>
+            <th>from_date</th>
+            <th>to_date</th>
             <th>Category</th>
-            <th>Description</th>
-            <th>Date</th>
+            <th>Name</th>
             <th></th>
           </tr>
         </th>
@@ -91,12 +95,12 @@
           <a href="?page={{ page_obj.next_page_number }}">next</a>
           <a href="?page={{ page_obj.paginator.num_pages }}">last </a>
       {% endif %}
-  </span>
+  </span>{% endif %}
  </div>
     </div> 
    </div>
-    {% endif %}
-<script src="{% static 'js/searchExpenses.js' %}">
+    
+<script src="{% static 'js/searchbudget.js' %}">
 
 </script>
 

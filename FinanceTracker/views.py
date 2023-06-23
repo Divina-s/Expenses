@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from .models import Category, Expense, Source, Income
+from .models import Category, Expense, Source, Income, Budget
 from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
@@ -81,7 +81,7 @@ def Editexpense(request,id):
     
        if not amount:
          messages.error(request,'Amount is required')
-         return render(request,'edit-expense.html', context )
+         return render(request,'editexpense.html', context )
        description=request.POST['description']
        category= request.POST['category']
        date=request.POST['date_expense']
@@ -197,8 +197,8 @@ def search_income(request):
       return JsonResponse(list(data), safe=False)
 def expense_category_summary(request):
    todays_date=datetime.date.today()
-   six_months_ago=todays_date-datetime.timedelta(days=30*6)
-   expenses=Expense.objects.filter(author=request.user, date__gte=six_months_ago, date__lte=todays_date)
+   one_month_ago=todays_date-datetime.timedelta(days=31)
+   expenses=Expense.objects.filter(author=request.user, date__gte=one_month_ago, date__lte=todays_date)
    finalrep={}
 
    def get_category(expense):
@@ -228,8 +228,8 @@ def statsIncome_View(request):
 
 def income_source_summary(request):
    todays_date=datetime.date.today()
-   six_months_ago=todays_date-datetime.timedelta(days=30*6)
-   income=Income.objects.filter(author=request.user, date__gte=six_months_ago, date__lte=todays_date)
+   one_month_ago=todays_date-datetime.timedelta(days=31)
+   income=Income.objects.filter(author=request.user, date__gte=one_month_ago, date__lte=todays_date)
    finalrep={}
 
    def get_source(income):
@@ -252,3 +252,101 @@ def income_source_summary(request):
 
 
    return JsonResponse({'income_source_data':finalrep}, safe=False)      
+
+
+def DashboardView(request):
+   return render(request,'dashboard.html', {})
+
+@login_required(login_url='/SignIn/')
+def BudgetView(request, *args, **kwargs):
+    categories=Category.objects.all()
+    budget=Budget.objects.filter(author=request.user)
+    paginator=Paginator(budget,2)
+    page_number=request.GET.get('page')    
+    page_obj=Paginator.get_page(paginator,page_number)
+    currency=UserPreference.objects.get(user=request.user).currency
+    context={
+       'budget':budget,
+       'page_obj':page_obj,
+       'currency':currency,
+    }
+    return render(request,'budget-index.html', context)
+
+@login_required(login_url='/SignIn/')
+def addBudgetView(request):
+   categories=Category.objects.all()
+   context={
+       'categories': categories,
+       'values':request.POST,
+    }
+
+
+
+
+   if request.method=='GET':
+       
+       return render(request,'add-budget.html', context )
+   if request.method =='POST':
+      amount=request.POST['amount']
+    
+      if not amount:
+         messages.error(request,'Amount is required')
+         return render(request,'add-budget.html', context )
+      Name=request.POST['name']
+      category= request.POST['category']
+      from_date=request.POST['from_date']
+      to_date=request.POST['to_date']
+       
+      Budget.objects.create(author=request.user,amount=amount, from_date=from_date, to_date=to_date, category=category,Name=Name ) 
+      messages.success(request,'Budget added Successfully!')
+      return redirect('budget-index')
+@login_required(login_url='/SignIn/')   
+def EditBudget(request,id):
+    budget=Budget.objects.get(pk=id)
+    categories=Category.objects.all()
+    context={
+         'budget':budget,
+         'values':budget,
+         'categories': categories,
+         
+      }
+    if request.method=="GET":
+        return render(request,'edit-budget.html', context)
+   
+    if request.method=="POST":
+       amount=request.POST['amount']
+    
+       if not amount:
+         messages.error(request,'Amount is required')
+         return render(request,'edit-budget.html', context )
+       Name=request.POST['name']
+       category= request.POST['category']
+       from_date=request.POST['from_date']
+       to_date=request.POST['to_date']
+    
+       budget.author=request.user
+       budget.amount=amount
+       budget.from_date=from_date
+       budget.to_date=to_date
+       budget.category=category
+       budget.name=Name 
+       budget.save()
+       messages.success(request,'Budget Updated Successfully!')
+       return redirect('budget-index')
+
+@login_required(login_url='/SignIn/')
+def deletebudget(request, id):
+   budget=Budget.objects.get(pk=id)
+   budget.delete()
+   messages.success(request, 'Budget Removed')
+   return redirect('home')
+       
+  
+def search_budget(request):
+   if request.method=='POST':
+      search_str=json.loads(request.body).get('searchdata')
+
+      budget=Budget.objects.filter(
+          amount__istartswith=search_str, author=request.user) | Budget.objects.filter(from_date__istartswith=search_str, author=request.user)|Budget.objects.filter(to_date__istartswith=search_str, author=request.user)| Budget.objects.filter(name__icontains=search_str, author=request.user) | Budget.objects.filter(category__istartswith=search_str, author=request.user)
+      data=budget.values()
+      return JsonResponse(list(data), safe=False)

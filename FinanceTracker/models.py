@@ -12,7 +12,7 @@ class Expense(models.Model):
 
 
     def __str__(self):
-        return self.Category
+        return self.category
     class Meta:
         ordering= ['-date']
 
@@ -48,3 +48,17 @@ class Source(models.Model):
    
 
     
+class Budget(models.Model):
+    amount=models.FloatField()
+    from_date=models.DateField(default=now)
+    to_date=models.DateField(default=now)
+    author=models.ForeignKey(to=User, on_delete=models.CASCADE)
+    category=models.CharField(max_length=256)
+    Name=models.TextField()
+    period=models.CharField(max_length=256)
+    income=models.ForeignKey(to=Income, on_delete=models.CASCADE, default=None, null=True)
+   
+    def __str__(self):
+        return self.category
+    class Meta:
+        ordering= ['-from_date']

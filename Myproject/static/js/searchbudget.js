@@ -1,11 +1,11 @@
-const searchfield=document.querySelector("#searchfield");
+const searchField=document.querySelector("#searchField");
 const tableOutput=document.querySelector(".table-output");
 const appTable=document.querySelector(".app-table");
 const paginationContainer=document.querySelector(".pagination-container");
 const tbody=document.querySelector('.table-body');
 tableOutput.style.display="none";
 
-searchfield.addEventListener("keyup",(e) => {
+searchField.addEventListener("keyup",(e) => {
     const searchValue=e.target.value;
         
     
@@ -13,8 +13,8 @@ searchfield.addEventListener("keyup",(e) => {
       paginationContainer.style.display ="none";
       tbody.innerHTML="";
        console.log("searchValue",searchValue);
-       fetch("searchexpenses/",{
-         body:JSON.stringify({searchText: searchValue}), 
+       fetch("searchbudget/",{
+         body:JSON.stringify({searchdata: searchValue}), 
          method:"POST",
          })
          .then((res)=>res.json())
@@ -34,8 +34,9 @@ searchfield.addEventListener("keyup",(e) => {
                 <tr>
                 <td>${item.amount}</td>
                 <td>${item.category}</td>
-                <td>${item.description}</td>
-                <td>${item.date}</td>
+                <td>${item.Name}</td>
+                <td>${item.from_date}</td>
+                <td>${item.to_date}</td>
                 </tr>`
 
                });

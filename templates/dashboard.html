@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+<div class="container mt-4">
+    <div class="row mt-3">
+  
+       <div class="col-md-10">
+        <nav aria-label="breadcrumb ">
+          <ol class="breadcrumb" >
+           <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+           <li class="breadcrumb-item active" aria-current="page">General Overview</li>
+          </ol>
+        </nav> 
+       </div>
+       <div class="row mt-3">
+        <h5>Dashboard</h5>
+        </div>
+     <hr/>
+     {% include 'partials/messages.html' %}
+   </div>
+   <div class="container">
+   <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100">
+      
+        <div class="card-body">
+          <h5 class="card-title">Monthly Budget</h5><br>
+          <p class="card-text"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+      
+        <div class="card-body">
+         <b> <h5 class="card-title">Monthly Expenses</h5></b>
+          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+       
+        <div class="card-body">
+          <h5 class="card-title">Monthly Income</h5>
+          <p class="card-text"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+    
+        <div class="card-body">
+          <h5 class="card-title">Total Income</h5>
+          <p class="card-text"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+      
+        <div class="card-body">
+          <b><h5 class="card-title">Total Expense</h5></b>
+          <p class="card-text"></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col">
+      <div class="card h-100">
+       
+        <div class="card-body">
+         <b> <h5 class="card-title">Total Budget</h5></b>
+          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+{% endblock %}
