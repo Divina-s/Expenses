@@ -6,9 +6,14 @@ from django.contrib.auth.models import User
 from .models import Category, Expense, Source, Income, Budget
 from django.core.paginator import Paginator
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from Members.models import UserPreference
 import datetime
+import xlwt
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
 
 def search_expenses(request):
    if request.method=='POST':
@@ -350,3 +355,162 @@ def search_budget(request):
           amount__istartswith=search_str, author=request.user) | Budget.objects.filter(from_date__istartswith=search_str, author=request.user)|Budget.objects.filter(to_date__istartswith=search_str, author=request.user)| Budget.objects.filter(name__icontains=search_str, author=request.user) | Budget.objects.filter(category__istartswith=search_str, author=request.user)
       data=budget.values()
       return JsonResponse(list(data), safe=False)
+def export_csv(request):   
+   response= HttpResponse(content_type='text/csv')
+   response['Content-Disposition']='attachment; filename=Expenses'+str(datetime.datetime.now())+'.csv'
+
+   writer=csv.writer(response)
+   writer.writerow(['Amount','Description','Category','Date'])
+
+   expenses=Expense.objects.filter(author=request.user)
+
+   for expense in expenses:
+      writer.writerow([expense.amount,expense.description,expense.category,expense.date])
+   return response   
+def exportincome_csv(request):   
+   response= HttpResponse(content_type='text/csv')
+   response['Content-Disposition']='attachment; filename=Income'+str(datetime.datetime.now())+'.csv'
+
+   writer=csv.writer(response)
+   writer.writerow(['Amount','Description','Source','Date'])
+
+   incomes=Income.objects.filter(author=request.user)
+
+   for income in incomes:
+      writer.writerow([income.amount,income.description,income.source,income.date])
+   return response   
+def exportbudget_csv(request):   
+   response= HttpResponse(content_type='text/csv')
+   response['Content-Disposition']='attachment; filename=Budget'+str(datetime.datetime.now())+'.csv'
+
+   writer=csv.writer(response)
+   writer.writerow(['Amount','from_date','to_date','Category','Name','period'])
+
+   budgets=Budget.objects.filter(author=request.user)
+
+   for budget in budgets:
+      writer.writerow([budget.amount,budget.from_date,budget.to_date,budget.category,budget.Name,budget.period])
+   return response   
+def export_excel(request):
+   response=HttpResponse(content_type='application/ms-excel')
+   response['Content-Disposition']='attachment; filename=Expenses'+str(datetime.datetime.now())+'.xls'
+   wb=xlwt.Workbook(encoding='utf-8')
+   ws=wb.add_sheet('Expenses')
+   row_num= 0
+   font_style=xlwt.XFStyle()
+   font_style.font.bold=True
+
+   columns=['Amount','Description','Category','Date']
+
+   for col_num in range(len(columns)):
+      ws.write(row_num,col_num,columns[col_num],font_style)
+
+   font_style=xlwt.XFStyle()
+
+   rows= Expense.objects.filter(author=request.user).values_list('amount','description','category','date')
+   for row in rows:
+      row_num+=1
+      
+      for col_num in range(len(row)):
+          ws.write(row_num,col_num, str(row[col_num]),font_style)
+   wb.save(response)
+   return response       
+def exportincome_excel(request):
+   response=HttpResponse(content_type='application/ms-excel')
+   response['Content-Disposition']='attachment; filename=Income'+str(datetime.datetime.now())+'.xls'
+   wb=xlwt.Workbook(encoding='utf-8')
+   ws=wb.add_sheet('Income')
+   row_num= 0
+   font_style=xlwt.XFStyle()
+   font_style.font.bold=True
+
+   columns=['Amount','Description','Source','Date']
+
+   for col_num in range(len(columns)):
+      ws.write(row_num,col_num,columns[col_num],font_style)
+
+   font_style=xlwt.XFStyle()
+
+   rows= Income.objects.filter(author=request.user).values_list('amount','description','source','date')
+   for row in rows:
+      row_num+=1
+      
+      for col_num in range(len(row)):
+          ws.write(row_num,col_num, str(row[col_num]),font_style)
+   wb.save(response)
+   return response       
+def exportbudget_excel(request):
+   response=HttpResponse(content_type='application/ms-excel')
+   response['Content-Disposition']='attachment; filename=Budget'+str(datetime.datetime.now())+'.xls'
+   wb=xlwt.Workbook(encoding='utf-8')
+   ws=wb.add_sheet('Income')
+   row_num= 0
+   font_style=xlwt.XFStyle()
+   font_style.font.bold=True
+
+   columns=['Amount','from_date','to_date','Category','Name','period']
+
+   for col_num in range(len(columns)):
+      ws.write(row_num,col_num,columns[col_num],font_style)
+
+   font_style=xlwt.XFStyle()
+
+   rows= Budget.objects.filter(author=request.user).values_list('amount','from_date','to_date','category','Name','period')
+   for row in rows:
+      row_num+=1
+      
+      for col_num in range(len(row)):
+          ws.write(row_num,col_num, str(row[col_num]),font_style)
+   wb.save(response)
+   return response       
+def export_pdf(request):
+   response=HttpResponse(content_type='application/pdf')
+   response['Content-Disposition']='inline; attachment; filename=Expenses'+str(datetime.datetime.now())+'.pdf'
+   response['Content-Transfer-Encoding']="binary"
+
+   expenses= Expense.objects.filter(author=request.user)
+   sum=expenses.aggregate(Sum('amount'))
+   html_string=render_to_string('expenseoutput.html',{'expenses':expenses,'total':sum['amount__sum']})
+   html=HTML(string=html_string)
+   result= html.write_pdf()
+
+   with tempfile.NamedTemporaryFile(delete=True) as output:
+       output.write(result)
+       output.flush()
+       output=open(output.name,'rb')
+       response.write(output.read())
+   return response
+def exportincome_pdf(request):
+   response=HttpResponse(content_type='application/pdf')
+   response['Content-Disposition']='inline; attachment; filename=Income'+str(datetime.datetime.now())+'.pdf'
+   response['Content-Transfer-Encoding']="binary"
+
+   incomes= Income.objects.filter(author=request.user)
+   sum=incomes.aggregate(Sum('amount'))
+   html_string=render_to_string('incomeoutput.html',{'incomes':incomes,'total':sum['amount__sum']})
+   html=HTML(string=html_string)
+   result= html.write_pdf()
+
+   with tempfile.NamedTemporaryFile(delete=True) as output:
+       output.write(result)
+       output.flush()
+       output=open(output.name,'rb')
+       response.write(output.read())
+   return response
+def exportbudget_pdf(request):
+   response=HttpResponse(content_type='application/pdf')
+   response['Content-Disposition']='inline; attachment; filename=Budget'+str(datetime.datetime.now())+'.pdf'
+   response['Content-Transfer-Encoding']="binary"
+
+   budgets= Budget.objects.filter(author=request.user)
+   sum=budgets.aggregate(Sum('amount'))
+   html_string=render_to_string('budgetoutput.html',{'budgets':budgets,'total':sum['amount__sum']})
+   html=HTML(string=html_string)
+   result= html.write_pdf()
+
+   with tempfile.NamedTemporaryFile(delete=True) as output:
+       output.write(result)
+       output.flush()
+       output=open(output.name,'rb')
+       response.write(output.read())
+   return response

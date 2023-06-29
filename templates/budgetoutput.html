@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget PDF</title>
+</head>
+<style>
+    @page{
+        size: "A4";
+        margin:2.5cm,1.5cm,3.5cm,1.5cm;
+
+        @top-center{
+            content: "MACK EXPENSES";
+        }
+        
+        @bottom-right {
+            content:"Page" counter(page)"of" counter pages;
+        }
+    }
+</style>
+<body>
+    <img src="data:image/png;base64,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" alt="..">
+    <h2>Budget list</h2>
+    <table class="table">
+        <thead class="thead">
+            <tr>
+                <th>No</th>
+                <th>Amount</th>
+                <th>From_date</th>
+                <th>to_date</th>
+                <th>Category</th>
+                <th>Name</th>
+                <th>Period</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            {% for budget in budgets %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{budget.amount}}</td>
+                <td>{{budget.from_date}}</td>
+                <td>{{budget.to_date}}</td>
+                <td>{{budget.category}}</td>
+                <td>{{budget.Name}}</td>
+
+                
+            </tr>
+            {% endfor %}
+         <br>  <tr>
+            <td> Total</td>
+            <td>{{total}}</td>
+           </tr>
+        </tbody>
+    </table>
+</body>
+</html>

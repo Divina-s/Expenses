@@ -30,12 +30,12 @@
 			<form action="{% url 'login' %}" method="POST" class="center-form">
 				{% csrf_token %}
 		{% include 'partials/messages.html' %}		
-	<div class=a"form-group"><input type="text" name="username" id="usernameField" class="form-control  form-control-sm" placeholder="username" value="{{fieldValues.username}}"></div><br>
+	<div class="form-group"><input type="text" name="username" id="usernameField" class="form-control  form-control-sm" placeholder="username" value="{{fieldValues.username}}"></div><br>
 
 	
 	
 	<div class="form-group"><input type="password" name="password" id="passwordfield" class="form-control form-control-sm" placeholder="password"></div><br>
-	<small class="float-right showPasswordToggle ">SHOW</small><br><br>
+	<small class="float-right showPasswordToggle "><b>SHOW</b></small><br><br>
 
 <input type="submit" value="Login"  class="form-control form-control-sm  btn btn-primary submit-btn">
 <br> <div class="card-body mt py-3">

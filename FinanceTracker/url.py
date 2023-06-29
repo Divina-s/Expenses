@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HomeView,addExpenseView, Editexpense, deleteexpense, search_expenses,IncomeView,addIncomeView, Editincome,deleteIncome, search_income,expense_category_summary,stats_View, income_source_summary, statsIncome_View, DashboardView,BudgetView,addBudgetView,EditBudget,deletebudget,search_budget
+from .views import HomeView,addExpenseView, Editexpense, deleteexpense, search_expenses,IncomeView,addIncomeView, Editincome,deleteIncome, search_income,expense_category_summary,stats_View, income_source_summary, statsIncome_View, DashboardView,BudgetView,addBudgetView,EditBudget,deletebudget,search_budget, export_csv, exportincome_csv,exportbudget_csv,export_excel,exportincome_excel,exportbudget_excel,export_pdf,exportincome_pdf, exportbudget_pdf
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -24,4 +24,16 @@ urlpatterns = [
      path('edit-budget/<int:id>', EditBudget, name='edit-budget'),
      path('delete-budget/<int:id>', deletebudget, name='delete-budget'),
      path('searchbudget/', csrf_exempt(search_budget) , name='search-budget'), 
+     path('export_csv',export_csv, name="export-csv"),
+     path('exportincome_csv',exportincome_csv, name="exportincome-csv"),
+     path('exportbudget_csv',exportbudget_csv, name="exportbudget-csv"),
+     path('export_excel',export_excel, name="export-excel"),
+     path('exportincome_excel',exportincome_excel, name="exportincome-excel"),
+     path('exportbudget_excel',exportbudget_excel, name="exportbudget-excel"),
+     path('export_pdf',export_pdf, name="export-pdf"),
+     path('exportincome_pdf',exportincome_pdf, name="exportincome-pdf"),
+     path('exportbudget_pdf',exportbudget_pdf, name="exportbudget-pdf"),
+  
+  
+     
 ]
