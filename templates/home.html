@@ -3,10 +3,16 @@
 {% block content %}
 <head>
   <style>
-    .breadcrumb >.active a{
-   color: black;
+    .breadcrumb{
+   color: rgb(224, 219, 219);
    text-decoration: none;
 }
+.btn1{
+        margin-right: 50px
+      }
+.btn2{
+        margin-right: 5px
+      }
   </style>
 </head>
 
@@ -22,29 +28,29 @@
          </nav> 
         </div>
         <div class="col-md-2">
-         <a href="{% url 'add-expense' %}" class="btn btn-primary">Add Expense</a>
+         <a href="{% url 'add-expense' %}" class="btn btn-outline-primary">Add Expense</a>
         </div>
     </div>
   </div>
-
+{% csrf_token %}
   <div class="container mt-3">
     {% include 'partials/messages.html' %}
     {% if expenses.count %}
     <div class="row">
       <div class="col-md-8">
-        <a href="{% url 'export-excel'%}" class="btn btn-dark">Export Excel</a>
-        <a href="{% url 'export-csv'%}" class="btn btn-primary">Export CSV</a>
-        <a href="{% url 'export-pdf'%}" class="btn btn-warning">Export PDF</a>
+        <a href="{% url 'export-excel'%}" class="btn1 btn btn-outline-dark btn-sm " data-mdb-ripple-color="dark">Export Excel</a>
+        <a href="{% url 'export-csv'%}" class="btn1 btn btn-outline-dark btn-sm " data-mdb-ripple-color="dark">Export CSV</a>
+        <a href="{% url 'export-pdf'%}" class="btn1 btn btn-outline-dark btn-sm " data-mdb-ripple-color="dark"">Export PDF</a>
       </div>
       <div class="col-md-4">
         
         <div class="form-group">
-          <input type="text" class="form-control"placeholder="Search" id="searchfield">
+          <input type="text" class="form-control"placeholder="Search" id="searchField">
         </div>
       </div>
     
     
-    </div>
+    </div><br>
     <div class="app-table">
       <table class="table table-stripped table-hover">
         <th>
@@ -63,7 +69,8 @@
             <td>{{expense.category}}</td>
             <td>{{expense.description}}</td>
             <td>{{expense.date}}</td>
-            <td><a href="{% url 'edit-expense' expense.id %}"class="btn btn-dark btn-sm">Edit</a></td>
+            <td><a href="{% url 'edit-expense' expense.id %}"class="btn2 btn btn-warning btn-sm " data-mdb-ripple-color="dark">Edit</a>
+              <a href="{% url 'delete-expense' expense.id %}" class="btn btn-danger btn-sm " data-mdb-ripple-color="dark">X</a></td>
           </tr>
           {% endfor %}
         </tbody>

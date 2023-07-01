@@ -14,6 +14,10 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
 from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from django.db.models import Count, Sum
+from django.core.exceptions import ObjectDoesNotExist
+
 
 def search_expenses(request):
    if request.method=='POST':
@@ -21,7 +25,8 @@ def search_expenses(request):
 
       expenses=Expense.objects.filter(
           amount__istartswith=search_str, author=request.user) | Expense.objects.filter(date__istartswith=search_str, author=request.user)| Expense.objects.filter(description__icontains=search_str, author=request.user) | Expense.objects.filter(category__istartswith=search_str, author=request.user)
-      data=expenses.values()
+      data = expenses.values('amount', 'category', 'description', 'date')
+
       return JsonResponse(list(data), safe=False)
    
 # Create your views here.
@@ -29,7 +34,7 @@ def search_expenses(request):
 def HomeView(request, *args, **kwargs):
     categories=Category.objects.all()
     expenses=Expense.objects.filter(author=request.user)
-    paginator=Paginator(expenses,2)
+    paginator=Paginator(expenses,10)
     page_number=request.GET.get('page')    
     page_obj=Paginator.get_page(paginator,page_number)
     currency=UserPreference.objects.get(user=request.user).currency
@@ -38,6 +43,7 @@ def HomeView(request, *args, **kwargs):
        'page_obj':page_obj,
        'currency':currency,
     }
+    
     return render(request,'home.html', context)
 
 
@@ -112,7 +118,7 @@ def deleteexpense(request, id):
 def IncomeView(request, *args, **kwargs):
     sources=Source.objects.all()
     income=Income.objects.filter(author=request.user)
-    paginator=Paginator(income,2)
+    paginator=Paginator(income,10)
     page_number=request.GET.get('page')    
     page_obj=Paginator.get_page(paginator,page_number)
     currency=UserPreference.objects.get(user=request.user).currency
@@ -260,13 +266,73 @@ def income_source_summary(request):
 
 
 def DashboardView(request):
-   return render(request,'dashboard.html', {})
+   total_income = calculate_total_income(request)
+   total_expense = calculate_total_expense(request)  
+   total_budget= calculate_total_budget(request)
+   monthly_expense=display_monthly_expense(request)
+   monthly_income=display_monthly_income(request)
+   monthly_budget=display_monthly_budget(request)
 
+ 
+   context = {
+     'total_income': total_income,
+     'total_expense':total_expense,
+     'total_budget':total_budget,
+     'monthly_expense':monthly_expense,
+     'monthly_income':monthly_income,
+     'monthly_budget':monthly_budget
+
+    
+   }
+
+   return render(request,'dashboard.html', context)
+def calculate_total_expense(request):
+   user_expenses = Expense.objects.filter(author=request.user)
+   total_expenses = sum(expense.amount for expense in user_expenses)
+   context={
+      'user_expenses': user_expenses, 
+      'total_expenses': total_expenses
+      }
+   return total_expenses
+def calculate_total_income(request):
+   user_income = Income.objects.filter(author=request.user)
+   total_income = sum(income.amount for income in user_income)
+   context={
+      'user_income': user_income, 
+      'total_income': total_income
+      }
+   return total_income
+def calculate_total_budget(request):
+   user_budget = Budget.objects.filter(author=request.user)
+   total_budget = sum(budget.amount for budget in user_budget)
+   context={
+      'user_budget': user_budget, 
+      'total_budget': total_budget
+      }
+   return total_budget
+def display_monthly_expense(request):
+       author = request.user
+       current_month = datetime.datetime.now().month
+       user_expenses = Expense.objects.filter(author=request.user, date__month=current_month)
+       monthly_expense = user_expenses.aggregate(total=Sum('amount'))
+       return monthly_expense
+def display_monthly_income(request):
+       author = request.user
+       current_month = datetime.datetime.now().month
+       user_income = Income.objects.filter(author=request.user, date__month=current_month)
+       monthly_income= user_income.aggregate(total=Sum('amount'))
+       return monthly_income
+def display_monthly_budget(request):
+       author = request.user
+       current_month = datetime.datetime.now().month
+       user_budget = Budget.objects.filter(author=request.user, from_date__month=current_month)
+       monthly_budget= user_budget.aggregate(total=Sum('amount'))
+       return monthly_budget
 @login_required(login_url='/SignIn/')
 def BudgetView(request, *args, **kwargs):
     categories=Category.objects.all()
     budget=Budget.objects.filter(author=request.user)
-    paginator=Paginator(budget,2)
+    paginator=Paginator(budget,10)
     page_number=request.GET.get('page')    
     page_obj=Paginator.get_page(paginator,page_number)
     currency=UserPreference.objects.get(user=request.user).currency

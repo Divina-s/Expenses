@@ -2,7 +2,74 @@
 {% load static %}
 {% block content %}
 
+<head>
+  <style>
+    .circle-container1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust the height as needed */
+  width: 100px; /* Adjust the width as needed */
+  border-radius: 80%;
+  background-color: #6dcf2c;
+}
+.circle-container2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust the height as needed */
+  width: 100px; /* Adjust the width as needed */
+  border-radius: 80%;
+  background-color: #da4621;
+}
+.circle-container3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust the height as needed */
+  width: 100px; /* Adjust the width as needed */
+  border-radius: 80%;
+  background-color: #8b37ac;
+}
+.circle-container4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust the height as needed */
+  width: 100px; /* Adjust the width as needed */
+  border-radius: 80%;
+  background-color: #3242d6;
+}
+.circle-container5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust the height as needed */
+  width: 100px; /* Adjust the width as needed */
+  border-radius: 80%;
+  background-color: #1d1d1f;
+}
+.circle-container6 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust the height as needed */
+  width: 100px; /* Adjust the width as needed */
+  border-radius: 80%;
+  background-color: #0deea3;
+}
+.number {
+  position: center;
+  width: 90px; /* Adjust the width as needed */
+  height: 90px; /* Adjust the height as needed */
+  border-radius: 50%;
+  background-color: #ffffff;
+  text-align: center;
+  line-height: 80px; /* Adjust the line-height to vertically center the number */
+}
 
+  </style>
+</head>
 
 <div class="container mt-4">
     <div class="row mt-3">
@@ -25,47 +92,64 @@
    <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col">
       <div class="card h-100">
-      
+     
         <div class="card-body">
-          <h5 class="card-title">Monthly Budget</h5><br>
-          <p class="card-text"></p>
-        </div>
+          <h5 class="card-title fw-bold">Monthly Budget</h5><br>
+          <div class="circle-container3">
+           
+            <div class="number">
+          <p class="card-text">{{ monthly_budget.total }}</p>
+        </div></div></div>
       </div>
     </div>
     <div class="col">
       <div class="card h-100">
       
         <div class="card-body">
-         <b> <h5 class="card-title">Monthly Expenses</h5></b>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        </div>
+         <b> <h5 class="card-title fw-bold">Monthly Expense</h5></b><br>
+         <div class="circle-container1">
+           
+          <div class="number">
+          <p class="card-text">{{ monthly_expense.total }}</p>
+        </div></div></div>
       </div>
     </div>
     <div class="col">
       <div class="card h-100">
        
         <div class="card-body">
-          <h5 class="card-title">Monthly Income</h5>
-          <p class="card-text"></p>
-        </div>
+          <h5 class="card-title fw-bold">Monthly Income</h5><br>
+          <div class="circle-container2">
+           
+            <div class="number">
+          <p class="card-text"> {{ monthly_income.total }}</p>
+        </div> </div></div>
       </div>
     </div>
     <div class="col">
       <div class="card h-100">
     
         <div class="card-body">
-          <h5 class="card-title">Total Income</h5>
-          <p class="card-text"></p>
-        </div>
+          <h5 class="card-title fw-bold">Total Income</h5><br>
+          <div class="circle-container4">
+           
+            <div class="number">
+          <p class="card-text">   {{ total_income }} </p>
+        </div></div></div>
       </div>
     </div>
     <div class="col">
       <div class="card h-100">
       
         <div class="card-body">
-          <b><h5 class="card-title">Total Expense</h5></b>
-          <p class="card-text"></p>
-        </div>
+          <b><h5 class="card-title fw-bold">Total Expense</h5></b><br>
+          <div class="circle-container5">
+           
+            <div class="number">
+          <p class="card-text">
+            {{ total_expense }} 
+            
+        </div></div></div>
       </div>
     </div>
     
@@ -73,8 +157,11 @@
       <div class="card h-100">
        
         <div class="card-body">
-         <b> <h5 class="card-title">Total Budget</h5></b>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+         <b> <h5 class="card-title fw-bold">Total Budget</h5></b><br>
+         <div class="circle-container6">
+           
+          <div class="number">
+          <p class="card-text">   {{ total_budget }} </p>
         </div>
       </div>
     </div>

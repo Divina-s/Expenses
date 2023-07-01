@@ -9,6 +9,7 @@ class Expense(models.Model):
     description=models.TextField()
     author=models.ForeignKey(to=User, on_delete=models.CASCADE)
     category=models.CharField(max_length=256)
+    total_expense = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
 
     def __str__(self):

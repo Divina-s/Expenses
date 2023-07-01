@@ -19,6 +19,7 @@ from .models import UserPreference
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.views import PasswordChangeView
+from django.core.exceptions import ObjectDoesNotExist
 class loginView(View):
    def get(self,request):
         return render(request,'login.html',{}) 
@@ -91,10 +92,10 @@ class registerView(View):
               user.set_password(password)
               user.save()
               messages.success(request,'Account Successfully created')
-              messages.info(request, 'Make sure to select your Preferred Currency!!' )
-              return render(request,'dashboard.html',{} )
+           
+              return render(request,'login.html',{} )
        
-        return render(request,'dashboard.html',{})  
+        return render(request,'login.html',{})  
 def landingView(request, *args, **kwargs):
     return render(request, 'landing.html', {})
 def logoutView(request):
@@ -102,22 +103,28 @@ def logoutView(request):
       messages.success(request, 'You have been logged out')
       return redirect('login')
 def indexView(request):
-   currency_data=[]
-   file_path=os.path.join(settings.BASE_DIR, 'currencies.json')
+   try:
+    user_preference = UserPreference.objects.get(user=request.user)
+    # Use the user_preference object in your code
+   except ObjectDoesNotExist:
+    # Handle the case when the user preference does not exist
+    # You can create a new UserPreference object or display an error message to the user
+    currency_data=[]
+    file_path=os.path.join(settings.BASE_DIR, 'currencies.json')
 
-   with open(file_path,'r') as json_file:
+    with open(file_path,'r') as json_file:
         
           data=json.load(json_file)
           for k,v in data.items():
            currency_data.append({'name':k, 'value':v})
    
-   exists=UserPreference.objects.filter(user=request.user).exists()
-   user_preferences=None
+    exists=UserPreference.objects.filter(user=request.user).exists()
+    user_preferences=None
    
    if exists:
    
          user_preferences=UserPreference.objects.get(user=request.user)
-   
+
    if request.method=='GET':
      
       return render(request,'preferences/index.html', {'currencies':currency_data, 'user_preferences':user_preferences})
